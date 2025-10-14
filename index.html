@@ -5,26 +5,99 @@
 <title>25th ATKW Trunk or Treat – Best Car Design Vote</title>
 <style>
 body {
-  background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQc00l4NJPSwA4AUwAMJEZGwGequXgYh-snYNfSECW8uQ&s') no-repeat center center fixed;
-  background-size: contain;
-  font-family: Arial, sans-serif;
-  color: #fff;
+  background: radial-gradient(circle at center, #1a1a1a 40%, #000000 100%);
+  color: #f0f0f0;
+  font-family: "Segoe UI", Arial, sans-serif;
   text-align: center;
   padding: 40px;
+  background-attachment: fixed;
+  background-image:
+    url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQc00l4NJPSwA4AUwAMJEZGwGequXgYh-snYNfSECW8uQ&s'),
+    radial-gradient(circle at center, #1a1a1a 40%, #000000 100%);
+  background-blend-mode: overlay;
+  background-size: 400px auto, cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
-h1 { color: orange; font-size: 2.5em; text-shadow: 2px 2px 4px #000; }
-h2 { font-size: 1.8em; }
-select, button { font-size: 1.2em; padding: 10px; margin: 10px; border-radius: 8px; border: none; }
-button { background-color: #ff6600; color: #fff; cursor: pointer; }
-button:hover { background-color: #ff8533; }
-table { margin: 20px auto; border-collapse: collapse; width: 50%; }
-td, th { border: 1px solid #fff; padding: 8px; }
-footer { margin-top: 30px; font-size: 0.9em; color: #ccc; }
-.admin { display: none; margin-top: 20px; }
+h1 {
+  color: #ff6600;
+  text-shadow: 2px 2px 8px #000;
+  font-size: 2.3em;
+}
+h2 {
+  color: #ccc;
+}
+select, button {
+  font-size: 1.1em;
+  padding: 10px 14px;
+  margin: 10px;
+  border-radius: 6px;
+  border: none;
+}
+button {
+  background-color: #ff6600;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+button:hover {
+  background-color: #ff8533;
+}
+#voteTable {
+  margin: 20px auto;
+  border-collapse: collapse;
+  width: 60%;
+  display: none; /* Hidden by default */
+}
+#voteTable th, #voteTable td {
+  border: 1px solid #444;
+  padding: 8px;
+}
+footer {
+  margin-top: 30px;
+  font-size: 0.9em;
+  color: #aaa;
+}
+#thanks {
+  display: none;
+  color: #33ff33;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-top: 15px;
+}
+#adminBtn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: transparent;
+  border: 1px solid #ff6600;
+  color: #ff6600;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  cursor: pointer;
+}
+#adminBtn:hover {
+  background-color: #ff6600;
+  color: #000;
+}
+#exportBtn {
+  display: none;
+  background-color: #333;
+  border: 1px solid #ff6600;
+  color: #ff6600;
+  margin-top: 10px;
+}
+#exportBtn:hover {
+  background-color: #ff6600;
+  color: #000;
+}
 </style>
 </head>
 <body>
-<h1>🎃 25th ATKW Trunk or Treat 🎃</h1>
+<button id="adminBtn">Admin View</button>
+
+<h1>25th ATKW Trunk or Treat 🎃</h1>
 <h2>Vote for Your Favorite Car!</h2>
 
 <label for="spot">Select Spot:</label>
@@ -34,7 +107,7 @@ footer { margin-top: 30px; font-size: 0.9em; color: #ccc; }
 <br>
 <button id="voteBtn">Submit Vote</button>
 
-<p id="thanks" style="display:none; color:lime;">Thanks for voting!</p>
+<p id="thanks">Thanks for voting!</p>
 
 <table id="voteTable">
   <thead>
@@ -43,51 +116,76 @@ footer { margin-top: 30px; font-size: 0.9em; color: #ccc; }
   <tbody></tbody>
 </table>
 
-<div class="admin">
-  <button id="exportBtn">Export Votes (Admin Only)</button>
-</div>
+<button id="exportBtn">Export Votes (Admin)</button>
 
-<footer>Voting closes at 6:45 PM on October 17, 2025. Hosted by 25th ATKW</footer>
+<footer>Voting closes at 6:45 PM on October 17, 2025. Hosted by 25th ATKW.</footer>
 
 <script>
-// Populate dropdown with spots 1-40
+// populate dropdown 1–40
 const select = document.getElementById('spot');
-for(let i=1;i<=40;i++){
-  const opt=document.createElement('option');
-  opt.value='Spot '+i;
-  opt.textContent='Spot '+i;
+for (let i = 1; i <= 40; i++) {
+  const opt = document.createElement('option');
+  opt.value = `Spot ${i}`;
+  opt.textContent = `Spot ${i}`;
   select.appendChild(opt);
 }
 
-// Handle vote submission
-const voteBtn=document.getElementById('voteBtn');
-const thanks=document.getElementById('thanks');
-const tableBody=document.querySelector('#voteTable tbody');
+const voteBtn = document.getElementById('voteBtn');
+const thanks = document.getElementById('thanks');
+const table = document.getElementById('voteTable');
+const tableBody = document.querySelector('#voteTable tbody');
+const exportBtn = document.getElementById('exportBtn');
 
-voteBtn.addEventListener('click',()=>{
-  const val=select.value;
-  if(!val){alert('Please select a spot!');return;}
-  const votes=JSON.parse(localStorage.getItem('tt_votes')||'[]');
-  const entry={spot:val,timestamp:new Date().toLocaleString()};
+// handle voting
+voteBtn.addEventListener('click', () => {
+  const val = select.value;
+  if (!val) {
+    alert('Please select a spot before voting!');
+    return;
+  }
+  const votes = JSON.parse(localStorage.getItem('tt_votes') || '[]');
+  const entry = { spot: val, timestamp: new Date().toLocaleString() };
   votes.push(entry);
-  localStorage.setItem('tt_votes',JSON.stringify(votes));
-  thanks.style.display='block';
-  select.value='';
-  const row=document.createElement('tr');
-  row.innerHTML=`<td>${entry.spot}</td><td>${entry.timestamp}</td>`;
+  localStorage.setItem('tt_votes', JSON.stringify(votes));
+  thanks.style.display = 'block';
+  select.value = '';
+
+  // add to hidden table
+  const row = document.createElement('tr');
+  row.innerHTML = `<td>${entry.spot}</td><td>${entry.timestamp}</td>`;
   tableBody.appendChild(row);
 });
 
-// Admin export button
-const exportBtn=document.getElementById('exportBtn');
-exportBtn.addEventListener('click',()=>{
-  const votes=JSON.parse(localStorage.getItem('tt_votes')||'[]');
-  if(votes.length===0){alert('No votes to export');return;}
-  let csv='Spot,Timestamp\\n';
-  votes.forEach(v=>{csv+=`"${v.spot}","${v.timestamp}"\\n`;});
-  const blob=new Blob([csv],{type:'text/csv'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download='trunk_votes.csv';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+// admin unlock
+document.getElementById('adminBtn').addEventListener('click', () => {
+  const pass = prompt('Enter admin password:');
+  if (pass === 'admin') {
+    table.style.display = 'table';
+    exportBtn.style.display = 'inline-block';
+    alert('Admin view enabled.');
+  } else {
+    alert('Incorrect password.');
+  }
+});
+
+// export CSV
+exportBtn.addEventListener('click', () => {
+  const votes = JSON.parse(localStorage.getItem('tt_votes') || '[]');
+  if (votes.length === 0) {
+    alert('No votes recorded yet.');
+    return;
+  }
+  let csv = 'Spot,Timestamp\n';
+  votes.forEach(v => {
+    csv += `"${v.spot}","${v.timestamp}"\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'trunk_votes.csv';
+  a.click();
+  URL.revokeObjectURL(url);
 });
 </script>
 </body>
