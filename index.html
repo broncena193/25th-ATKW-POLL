@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>25th ATKW Trunk or Treat – Best Car Design Vote</title>
+<title>25th ATKW Trunk or Treat – Best Car & Costume Vote</title>
 <style>
 body {
   background: radial-gradient(circle at center, #1a1a1a 40%, #000000 100%);
@@ -27,7 +27,7 @@ h1 {
 h2 {
   color: #ccc;
 }
-select, button {
+label, select, input, button {
   font-size: 1.1em;
   padding: 10px 14px;
   margin: 10px;
@@ -46,7 +46,7 @@ button:hover {
 #voteTable {
   margin: 20px auto;
   border-collapse: collapse;
-  width: 60%;
+  width: 80%;
   display: none; /* Hidden by default */
 }
 #voteTable th, #voteTable td {
@@ -92,36 +92,66 @@ footer {
   background-color: #ff6600;
   color: #000;
 }
+input[type="text"] {
+  width: 200px;
+}
 </style>
 </head>
 <body>
 <button id="adminBtn">Admin View</button>
 
 <h1>25th ATKW Trunk or Treat 🎃</h1>
-<h2>Vote for Your Favorite Car!</h2>
+<h2>Vote for Your Favorite Car & Costume!</h2>
 
-<label for="spot">Select Spot:</label>
+<!-- Car Spot Voting -->
+<label for="spot">Select Car Spot:</label>
 <select id="spot">
   <option value="">-- Choose a Spot --</option>
 </select>
 <br>
+
+<!-- Costume Voting -->
+<h3>Best Costume</h3>
+
+<label>Under 12:</label>
+<input type="text" id="costumeUnder12" placeholder="Enter name"><br>
+
+<label>12–18:</label>
+<input type="text" id="costume12to18" placeholder="Enter name"><br>
+
+<label>Airmen:</label>
+<input type="text" id="costumeAirmen" placeholder="Enter name"><br>
+
+<label>Couples/Group:</label>
+<input type="text" id="costumeCouples" placeholder="Enter name"><br>
+
 <button id="voteBtn">Submit Vote</button>
 
 <p id="thanks">Thanks for voting!</p>
 
 <table id="voteTable">
   <thead>
-    <tr><th>Spot</th><th>Timestamp</th></tr>
+    <tr>
+      <th>Spot</th>
+      <th>Under 12 Costume</th>
+      <th>12–18 Costume</th>
+      <th>Airmen Costume</th>
+      <th>Couples/Group Costume</th>
+      <th>Timestamp</th>
+    </tr>
   </thead>
   <tbody></tbody>
 </table>
 
 <button id="exportBtn">Export Votes (Admin)</button>
 
-<footer>Voting closes at 6:45 PM on October 17, 2025. Hosted by 25th ATKW.</footer>
+<footer>
+  Voting closes at 6:45 PM on October 17, 2025. Hosted by 25th ATKW.<br>
+  For information on the trunks, visit <a href="https://www.signupgenius.com/go/10C0545A8AB2DA2FACF8-59072753-trunk" style="color:#ff6600;" target="_blank">this link</a>.
+</footer>
 
 <script>
-// populate dropdown 1–40
+// Populate dropdown 1–40
 const select = document.getElementById('spot');
 for (let i = 1; i <= 40; i++) {
   const opt = document.createElement('option');
@@ -138,21 +168,35 @@ const exportBtn = document.getElementById('exportBtn');
 
 // handle voting
 voteBtn.addEventListener('click', () => {
-  const val = select.value;
-  if (!val) {
+  const spotVal = select.value;
+  if (!spotVal) {
     alert('Please select a spot before voting!');
     return;
   }
+
   const votes = JSON.parse(localStorage.getItem('tt_votes') || '[]');
-  const entry = { spot: val, timestamp: new Date().toLocaleString() };
+  const entry = {
+    spot: spotVal,
+    costumeUnder12: document.getElementById('costumeUnder12').value.trim(),
+    costume12to18: document.getElementById('costume12to18').value.trim(),
+    costumeAirmen: document.getElementById('costumeAirmen').value.trim(),
+    costumeCouples: document.getElementById('costumeCouples').value.trim(),
+    timestamp: new Date().toLocaleString()
+  };
   votes.push(entry);
   localStorage.setItem('tt_votes', JSON.stringify(votes));
   thanks.style.display = 'block';
+
+  // clear inputs
   select.value = '';
+  document.getElementById('costumeUnder12').value = '';
+  document.getElementById('costume12to18').value = '';
+  document.getElementById('costumeAirmen').value = '';
+  document.getElementById('costumeCouples').value = '';
 
   // add to hidden table
   const row = document.createElement('tr');
-  row.innerHTML = `<td>${entry.spot}</td><td>${entry.timestamp}</td>`;
+  row.innerHTML = `<td>${entry.spot}</td><td>${entry.costumeUnder12}</td><td>${entry.costume12to18}</td><td>${entry.costumeAirmen}</td><td>${entry.costumeCouples}</td><td>${entry.timestamp}</td>`;
   tableBody.appendChild(row);
 });
 
@@ -175,9 +219,9 @@ exportBtn.addEventListener('click', () => {
     alert('No votes recorded yet.');
     return;
   }
-  let csv = 'Spot,Timestamp\n';
+  let csv = 'Spot,Under 12,12-18,Airmen,Couples/Group,Timestamp\n';
   votes.forEach(v => {
-    csv += `"${v.spot}","${v.timestamp}"\n`;
+    csv += `"${v.spot}","${v.costumeUnder12}","${v.costume12to18}","${v.costumeAirmen}","${v.costumeCouples}","${v.timestamp}"\n`;
   });
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
