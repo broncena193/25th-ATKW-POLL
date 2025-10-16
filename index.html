@@ -19,82 +19,22 @@ body {
   background-repeat: no-repeat;
   background-position: center;
 }
-h1 {
-  color: #ff6600;
-  text-shadow: 2px 2px 8px #000;
-  font-size: 2.3em;
-}
-h2 {
-  color: #ccc;
-}
-label, select, input, button {
-  font-size: 1.1em;
-  padding: 10px 14px;
-  margin: 10px;
-  border-radius: 6px;
-  border: none;
-}
-button {
-  background-color: #ff6600;
-  color: #fff;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-button:hover {
-  background-color: #ff8533;
-}
-#voteTable {
-  margin: 20px auto;
-  border-collapse: collapse;
-  width: 80%;
-  display: none; /* Hidden by default */
-}
-#voteTable th, #voteTable td {
-  border: 1px solid #444;
-  padding: 8px;
-}
-footer {
-  margin-top: 30px;
-  font-size: 0.9em;
-  color: #aaa;
-}
-#thanks {
-  display: none;
-  color: #33ff33;
-  font-weight: bold;
-  font-size: 1.2em;
-  margin-top: 15px;
-}
-#adminBtn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background-color: transparent;
-  border: 1px solid #ff6600;
-  color: #ff6600;
-  padding: 6px 10px;
-  border-radius: 4px;
-  font-size: 0.9em;
-  cursor: pointer;
-}
-#adminBtn:hover {
-  background-color: #ff6600;
-  color: #000;
-}
-#exportBtn {
-  display: none;
-  background-color: #333;
-  border: 1px solid #ff6600;
-  color: #ff6600;
-  margin-top: 10px;
-}
-#exportBtn:hover {
-  background-color: #ff6600;
-  color: #000;
-}
-input[type="text"] {
-  width: 200px;
-}
+h1 { color: #ff6600; text-shadow: 2px 2px 8px #000; font-size: 2.3em; }
+h2 { color: #ccc; }
+label, select, input, button { font-size: 1.1em; padding: 10px 14px; margin: 10px; border-radius: 6px; border: none; }
+button { background-color: #ff6600; color: #fff; cursor: pointer; transition: background-color 0.2s ease; }
+button:hover { background-color: #ff8533; }
+#voteTable { margin: 20px auto; border-collapse: collapse; width: 80%; display: none; }
+#voteTable th, #voteTable td { border: 1px solid #444; padding: 8px; }
+.tallyTable { margin: 20px auto; border-collapse: collapse; width: 60%; display: none; }
+.tallyTable th, .tallyTable td { border: 1px solid #444; padding: 6px; color: #fff; }
+footer { margin-top: 30px; font-size: 0.9em; color: #aaa; }
+#thanks { display: none; color: #33ff33; font-weight: bold; font-size: 1.2em; margin-top: 15px; }
+#adminBtn { position: absolute; top: 15px; right: 15px; background-color: transparent; border: 1px solid #ff6600; color: #ff6600; padding: 6px 10px; border-radius: 4px; font-size: 0.9em; cursor: pointer; }
+#adminBtn:hover { background-color: #ff6600; color: #000; }
+#exportBtn { display: none; background-color: #333; border: 1px solid #ff6600; color: #ff6600; margin-top: 10px; }
+#exportBtn:hover { background-color: #ff6600; color: #000; }
+input[type="text"] { width: 200px; }
 </style>
 </head>
 <body>
@@ -112,23 +52,15 @@ input[type="text"] {
 
 <!-- Costume Voting -->
 <h3>Best Costume</h3>
-
-<label>Under 12:</label>
-<input type="text" id="costumeUnder12" placeholder="Enter name"><br>
-
-<label>12–18:</label>
-<input type="text" id="costume12to18" placeholder="Enter name"><br>
-
-<label>Airmen:</label>
-<input type="text" id="costumeAirmen" placeholder="Enter name"><br>
-
-<label>Couples/Group:</label>
-<input type="text" id="costumeCouples" placeholder="Enter name"><br>
+<label>Under 12:</label> <input type="text" id="costumeUnder12" placeholder="Enter name"><br>
+<label>12–18:</label> <input type="text" id="costume12to18" placeholder="Enter name"><br>
+<label>Airmen:</label> <input type="text" id="costumeAirmen" placeholder="Enter name"><br>
+<label>Couples/Group:</label> <input type="text" id="costumeCouples" placeholder="Enter name"><br>
 
 <button id="voteBtn">Submit Vote</button>
-
 <p id="thanks">Thanks for voting!</p>
 
+<!-- Raw votes table -->
 <table id="voteTable">
   <thead>
     <tr>
@@ -143,11 +75,24 @@ input[type="text"] {
   <tbody></tbody>
 </table>
 
+<!-- Tally table -->
+<h3>Vote Tallies (Admin)</h3>
+<table id="tallyTable" class="tallyTable">
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>Name / Spot</th>
+      <th>Votes</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
 <button id="exportBtn">Export Votes (Admin)</button>
 
 <footer>
-  Voting closes at 6:45 PM on October 17, 2025. Hosted by 25th ATKW.<br>
-  For information on the trunks, visit <a href="https://www.signupgenius.com/go/10C0545A8AB2DA2FACF8-59072753-trunk" style="color:#ff6600;" target="_blank">this link</a>.
+Voting closes at 6:45 PM on October 17, 2025. Hosted by 25th ATKW.<br>
+For information on the trunks, visit <a href="https://www.signupgenius.com/go/10C0545A8AB2DA2FACF8-59072753-trunk" style="color:#ff6600;" target="_blank">this link</a>.
 </footer>
 
 <script>
@@ -163,18 +108,16 @@ for (let i = 1; i <= 40; i++) {
 const voteBtn = document.getElementById('voteBtn');
 const thanks = document.getElementById('thanks');
 const table = document.getElementById('voteTable');
-const tableBody = document.querySelector('#voteTable tbody');
+const tableBody = table.querySelector('tbody');
+const tallyTable = document.getElementById('tallyTable');
+const tallyBody = tallyTable.querySelector('tbody');
 const exportBtn = document.getElementById('exportBtn');
 
-// handle voting
+// Voting handler
 voteBtn.addEventListener('click', () => {
   const spotVal = select.value;
-  if (!spotVal) {
-    alert('Please select a spot before voting!');
-    return;
-  }
+  if (!spotVal) { alert('Please select a spot before voting!'); return; }
 
-  const votes = JSON.parse(localStorage.getItem('tt_votes') || '[]');
   const entry = {
     spot: spotVal,
     costumeUnder12: document.getElementById('costumeUnder12').value.trim(),
@@ -183,6 +126,8 @@ voteBtn.addEventListener('click', () => {
     costumeCouples: document.getElementById('costumeCouples').value.trim(),
     timestamp: new Date().toLocaleString()
   };
+
+  const votes = JSON.parse(localStorage.getItem('tt_votes') || '[]');
   votes.push(entry);
   localStorage.setItem('tt_votes', JSON.stringify(votes));
   thanks.style.display = 'block';
@@ -194,31 +139,28 @@ voteBtn.addEventListener('click', () => {
   document.getElementById('costumeAirmen').value = '';
   document.getElementById('costumeCouples').value = '';
 
-  // add to hidden table
+  // Update raw table
   const row = document.createElement('tr');
   row.innerHTML = `<td>${entry.spot}</td><td>${entry.costumeUnder12}</td><td>${entry.costume12to18}</td><td>${entry.costumeAirmen}</td><td>${entry.costumeCouples}</td><td>${entry.timestamp}</td>`;
   tableBody.appendChild(row);
 });
 
-// admin unlock
+// Admin unlock
 document.getElementById('adminBtn').addEventListener('click', () => {
   const pass = prompt('Enter admin password:');
   if (pass === 'admin') {
     table.style.display = 'table';
     exportBtn.style.display = 'inline-block';
+    tallyTable.style.display = 'table';
+    updateTally();
     alert('Admin view enabled.');
-  } else {
-    alert('Incorrect password.');
-  }
+  } else { alert('Incorrect password.'); }
 });
 
-// export CSV
+// Export CSV
 exportBtn.addEventListener('click', () => {
   const votes = JSON.parse(localStorage.getItem('tt_votes') || '[]');
-  if (votes.length === 0) {
-    alert('No votes recorded yet.');
-    return;
-  }
+  if (votes.length === 0) { alert('No votes recorded yet.'); return; }
   let csv = 'Spot,Under 12,12-18,Airmen,Couples/Group,Timestamp\n';
   votes.forEach(v => {
     csv += `"${v.spot}","${v.costumeUnder12}","${v.costume12to18}","${v.costumeAirmen}","${v.costumeCouples}","${v.timestamp}"\n`;
@@ -231,6 +173,37 @@ exportBtn.addEventListener('click', () => {
   a.click();
   URL.revokeObjectURL(url);
 });
+
+// Update tally function
+function updateTally() {
+  const votes = JSON.parse(localStorage.getItem('tt_votes') || '[]');
+  const categories = ['spot','costumeUnder12','costume12to18','costumeAirmen','costumeCouples'];
+  const namesMap = {};
+  categories.forEach(cat => { namesMap[cat] = {}; });
+
+  votes.forEach(v => {
+    categories.forEach(cat => {
+      const val = v[cat];
+      if (val) { if (!namesMap[cat][val]) namesMap[cat][val] = 0; namesMap[cat][val]++; }
+    });
+  });
+
+  tallyBody.innerHTML = '';
+  categories.forEach(cat => {
+    for (const [name, count] of Object.entries(namesMap[cat])) {
+      const displayCat = cat==='spot'?'Car Spot':
+        cat==='costumeUnder12'?'Under 12':
+        cat==='costume12to18'?'12–18':
+        cat==='costumeAirmen'?'Airmen':'Couples/Group';
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${displayCat}</td><td>${name}</td><td>${count}</td>`;
+      tallyBody.appendChild(row);
+    }
+  });
+}
+
+// Auto-update tally every 5 sec
+setInterval(()=>{ if(tallyTable.style.display==='table') updateTally(); },5000);
 </script>
 </body>
 </html>
